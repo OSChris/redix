@@ -156,15 +156,19 @@ defmodule Redix do
 
   """
   @spec start_link(binary | Keyword.t, Keyword.t) :: GenServer.on_start
-  def start_link(uri_or_redis_opts \\ [], connection_opts \\ [])
-
   def start_link(uri, other_opts) when is_binary(uri) and is_list(other_opts) do
     uri |> Redix.URI.opts_from_uri() |> start_link(other_opts)
   end
-
+  
   def start_link(redis_opts, other_opts) do
     Utils.start_link(Redix.Connection, redis_opts, other_opts)
   end
+
+  def start_link(all_opts) when is_list(all_opts) do
+    Utils.start_link(Redix.Connection, all_opts)
+  end
+
+
 
   @doc """
   Closes the connection to the Redis server.

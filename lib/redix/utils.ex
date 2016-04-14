@@ -52,6 +52,16 @@ defmodule Redix.Utils do
     Connection.start_link(conn_module, opts, connection_opts)
   end
 
+  @spec start_link(module, Keyword.t) :: GenServer.on_start
+  def start_link(conn_module, all_opts) do
+    {important_opts, connection_opts} = Keyword.split(all_opts, @redix_opts)
+
+    all_opts = Keyword.merge(@redis_default_opts, important_opts)
+    all_opts = Keyword.merge(@redix_default_opts, all_opts)
+
+    Connection.start_link(conn_module, all_opts, connection_opts)
+  end
+
   @spec connect(term, Redix.Connection.state) :: term
   def connect(info, %{opts: opts} = state) do
     {host, port, socket_opts, timeout} = tcp_connection_opts(opts)
